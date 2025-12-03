@@ -30,9 +30,13 @@ Ensure you have the following installed on your system:
 - **Node.js 18.x+** → [Download](https://nodejs.org/)
 - **Git** → [Download](https://git-scm.com/downloads)
 
-### Optional
+### Required
 
 - **Gemini API Key** (for AI-powered features) → [Get API Key](https://makersuite.google.com/app/apikey)
+  - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+  - Sign in with your Google account
+  - Click "Create API Key"
+  - Copy the generated key for use in `.env` file
 
 ---
 
@@ -100,7 +104,7 @@ FLASK_DEBUG=True
 FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
 
-# Optional: Gemini API Key (for AI features)
+# MOST IMPORTANT: Gemini API Key (Required for AI features)
 GEMINI_API_KEY=your_gemini_api_key_here
 
 # CORS Origins - IMPORTANT: Set to "*" to allow all origins
