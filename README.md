@@ -41,8 +41,8 @@ Ensure you have the following installed on your system:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/Adiverse07/TransformX.git
-cd TransformX
+git clone https://github.com/Adiverse07/TransformX-AI.git
+cd TransformX-AI
 ```
 
 ### Step 2: Backend Setup
@@ -133,7 +133,7 @@ Open a **new terminal window** (keep backend running).
 #### 3.1 Navigate to Project Root
 
 ```bash
-cd TransformX
+cd TransformX-AI
 ```
 
 #### 3.2 Install Node.js Dependencies
@@ -232,7 +232,7 @@ output/
 ## 📁 Project Structure
 
 ```
-TransformX/
+TransformX-AI/
 │
 ├── backend/                      # Python Flask backend
 │   ├── extractors/              # Document content extractors
@@ -390,6 +390,6 @@ Restart the backend server after making changes.
 
 ---
 
-[⭐ Star this repo](https://github.com/Adiverse07/TransformX) • [🐛 Report Bug](https://github.com/Adiverse07/TransformX/issues) • [💡 Request Feature](https://github.com/Adiverse07/TransformX/issues)
+[⭐ Star this repo](https://github.com/Adiverse07/TransformX-AI) • [🐛 Report Bug](https://github.com/Adiverse07/TransformX-AI/issues) • [💡 Request Feature](https://github.com/Adiverse07/TransformX-AI/issues)
 
 </div>
