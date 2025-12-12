@@ -12,6 +12,10 @@ pdfplumber==0.10.3
 PyPDF2==3.0.1
 pdf2image==1.17.0
 
+# Document Processing - Excel (NEW - Required for ANY to REGS)
+openpyxl==3.1.2
+xlrd==2.0.1
+
 # XML Processing
 lxml==5.1.0
 beautifulsoup4==4.12.2

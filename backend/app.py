@@ -1,12 +1,14 @@
 """
 Flask application for document conversion services
+File: backend/app.py
 """
 from flask import Flask, jsonify
 from flask_cors import CORS
 from routes.conversion import conversion_bp
 from routes.regs_conversion import regs_bp
 from routes.image_conversion import image_bp
-from routes.history import history_bp  # NEW: Import history blueprint
+from routes.history import history_bp
+from routes.any_to_regs_conversion import any_to_regs_bp  # NEW: Import any-to-regs blueprint
 import os
 from dotenv import load_dotenv
 
@@ -44,7 +46,8 @@ CORS(app, resources={
 app.register_blueprint(conversion_bp, url_prefix='/api/convert')
 app.register_blueprint(image_bp, url_prefix='/api/convert')
 app.register_blueprint(regs_bp, url_prefix='/api/regs')
-app.register_blueprint(history_bp, url_prefix='/api/history')  # NEW: Register history blueprint
+app.register_blueprint(history_bp, url_prefix='/api/history')
+app.register_blueprint(any_to_regs_bp, url_prefix='/api/any-to-regs')  # NEW: Register any-to-regs blueprint
 
 @app.route('/')
 def index():
@@ -56,8 +59,9 @@ def index():
         'endpoints': {
             'dita_conversion': '/api/convert',
             'regs_to_pdf': '/api/regs',
+            'any_to_regs': '/api/any-to-regs',  # NEW
             'image_to_svg': '/api/convert/image-to-svg',
-            'history': '/api/history'  # NEW
+            'history': '/api/history'
         },
         'config': {
             'upload_folder': app.config['UPLOAD_FOLDER'],
@@ -77,8 +81,9 @@ def health():
         'services': {
             'dita_conversion': 'available',
             'regs_to_pdf': 'available',
+            'any_to_regs': 'available',  # NEW
             'image_to_svg': 'available',
-            'history': 'available'  # NEW
+            'history': 'available'
         },
         'folders': {
             'uploads': 'ok' if upload_exists else 'missing',
@@ -117,8 +122,9 @@ if __name__ == '__main__':
     print(f"\n🔌 Available Services:")
     print(f"  • DITA Conversion: http://localhost:{port}/api/convert")
     print(f"  • REGS to PDF: http://localhost:{port}/api/regs")
+    print(f"  • ANY to REGS: http://localhost:{port}/api/any-to-regs")  # NEW
     print(f"  • Image to SVG: http://localhost:{port}/api/convert/image-to-svg")
-    print(f"  • History: http://localhost:{port}/api/history")  # NEW
+    print(f"  • History: http://localhost:{port}/api/history")
     print(f"{'='*60}\n")
     
     app.run(host='0.0.0.0', port=port, debug=debug)

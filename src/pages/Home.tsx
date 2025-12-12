@@ -1,4 +1,4 @@
-import { FileText, FileCode, FileImage } from "lucide-react";
+import { FileText, FileCode, FileImage, FileSpreadsheet } from "lucide-react";
 import { ModuleCard } from "@/components/ModuleCard";
 
 const modules = [
@@ -19,6 +19,12 @@ const modules = [
     description: "Convert regulatory files to PDF format for easy distribution and viewing",
     icon: FileText,
     route: "/regs-to-pdf",
+  },
+  {
+    title: "PDF/DocX/Excel → .REGS",
+    description: "Extract register specifications from PDF, Word, or Excel documents to .REGS format",
+    icon: FileSpreadsheet,
+    route: "/any-to-regs",
   },
   {
     title: "Image → SVG",

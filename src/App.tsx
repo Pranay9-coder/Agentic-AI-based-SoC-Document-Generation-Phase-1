@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import PdfToDita from "./pages/modules/PdfToDita";
 import DocxToDita from "./pages/modules/DocxToDita";
 import RegsToPdf from "./pages/modules/RegsToPdf";
+import AnyToRegs from "./pages/modules/AnyToRegs";
 import ImageToSvg from "./pages/modules/ImageToSvg";
 import History from "./pages/History";
 import Settings from "./pages/Settings";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/pdf-to-dita" element={<PdfToDita />} />
             <Route path="/docx-to-dita" element={<DocxToDita />} />
             <Route path="/regs-to-pdf" element={<RegsToPdf />} />
+            <Route path="/any-to-regs" element={<AnyToRegs />} />
             <Route path="/image-to-svg" element={<ImageToSvg />} />
             <Route path="/history" element={<History />} />
             <Route path="/settings" element={<Settings />} />

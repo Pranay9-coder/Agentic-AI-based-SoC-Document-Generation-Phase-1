@@ -32,3 +32,6 @@ dist-ssr
 *.sw?
 backend/outputs/*
 !backend/outputs/.gitkeep
+backend/venv/
+venv/
+**/venv/
