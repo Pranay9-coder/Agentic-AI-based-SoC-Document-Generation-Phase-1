@@ -1,103 +1,132 @@
 import { useState, useRef } from "react";
-import { Upload, File, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Upload, FileUp } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { toast } from "sonner";
 
 interface FileUploadProps {
   accept: string;
-  onFileSelect: (file: File) => void;
-  isProcessing?: boolean;
-  progress?: number;
+  onFileSelect: (file: File) => void | Promise<void>;
+  onMultipleFilesSelect?: (files: File[]) => void | Promise<void>;
+  isProcessing: boolean;
+  progress: number;
+  multiple?: boolean;
 }
 
-export function FileUpload({ accept, onFileSelect, isProcessing = false, progress = 0 }: FileUploadProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+export function FileUpload({
+  accept,
+  onFileSelect,
+  onMultipleFilesSelect,
+  isProcessing,
+  progress,
+  multiple = false
+}: FileUploadProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      onFileSelect(file);
-      toast.success(`File "${file.name}" selected`);
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files);
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      handleFiles(files);
     }
   };
 
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const handleFiles = (files: File[]) => {
+    if (files.length === 0) return;
+
+    setSelectedFiles(files);
+
+    if (multiple && onMultipleFilesSelect) {
+      onMultipleFilesSelect(files);
+    } else {
+      onFileSelect(files[0]);
     }
   };
 
-  const handleUploadClick = () => {
+  const handleClick = () => {
     fileInputRef.current?.click();
   };
 
   return (
-    <div className="space-y-4">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept={accept}
-        onChange={handleFileChange}
-        className="hidden"
-      />
-
-      {!selectedFile ? (
-        <div
-          onClick={handleUploadClick}
-          className="border-2 border-dashed border-border rounded-lg p-12 text-center cursor-pointer hover:border-primary transition-colors dark:hover:cyber-glow"
-        >
-          <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-lg font-medium mb-2">Click to upload file</p>
-          <p className="text-sm text-muted-foreground">
-            Accepted formats: {accept}
-          </p>
-        </div>
-      ) : (
-        <div className="border border-border rounded-lg p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-secondary">
-                <File className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-medium">{selectedFile.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
-            </div>
-            {!isProcessing && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleRemoveFile}
-              >
-                <X className="h-4 w-4" />
-              </Button>
+    <Card 
+      className={`cursor-pointer transition-all duration-300 ${
+        isDragging ? 'border-primary bg-primary/5' : 'hover:border-primary/50'
+      } ${isProcessing ? 'pointer-events-none opacity-70' : ''}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={handleClick}
+    >
+      <CardContent className="p-8">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={accept}
+          onChange={handleFileInput}
+          className="hidden"
+          disabled={isProcessing}
+          multiple={multiple}
+        />
+        
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="p-4 rounded-full bg-secondary">
+            {selectedFiles.length > 0 ? (
+              <FileUp className="h-8 w-8 text-primary" />
+            ) : (
+              <Upload className="h-8 w-8 text-muted-foreground" />
             )}
           </div>
-
-          {isProcessing && (
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Processing...</span>
-                <span>{progress}%</span>
+          
+          <div>
+            <h3 className="text-lg font-semibold mb-1">
+              {selectedFiles.length > 0 
+                ? `${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''} selected` 
+                : multiple 
+                  ? 'Drop files here or click to browse'
+                  : 'Drop file here or click to browse'}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {multiple 
+                ? 'You can select multiple files'
+                : 'Maximum file size: 50MB'}
+            </p>
+            
+            {selectedFiles.length > 0 && (
+              <div className="mt-3 text-xs text-muted-foreground">
+                {selectedFiles.map((file, index) => (
+                  <div key={index}>• {file.name}</div>
+                ))}
               </div>
+            )}
+          </div>
+          
+          {isProcessing && (
+            <div className="w-full">
               <Progress value={progress} className="h-2" />
+              <p className="text-sm text-muted-foreground mt-2">
+                Processing... {progress}%
+              </p>
             </div>
           )}
         </div>
-      )}
-
-      {selectedFile && !isProcessing && (
-        <Button onClick={handleUploadClick} className="w-full">
-          Change File
-        </Button>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 }

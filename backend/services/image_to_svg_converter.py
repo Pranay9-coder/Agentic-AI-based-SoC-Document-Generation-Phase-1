@@ -16,7 +16,7 @@ class ImageToSVGConverter:
         genai.configure(api_key=api_key)
         
         # FIXED: Use stable model instead of experimental
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
         self.max_image_size = (1024, 1024)
         
         # Track last API call for rate limiting

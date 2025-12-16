@@ -13,7 +13,7 @@ interface Conversion {
   filename: string;
   original_name: string;
   type: string;
-  conversion_type: 'dita' | 'regs' | 'svg';
+  conversion_type: 'dita' | 'regs' | 'any-to-regs' | 'svg';
   date: string;
   status: string;
   download_url: string;
@@ -66,7 +66,7 @@ export default function History() {
       
       // Show brief success message
       toast.success(`Download started: ${conversion.filename}`, {
-        duration: 2000, // Auto-dismiss after 2 seconds
+        duration: 2000,
       });
     } catch (err) {
       toast.error('Download failed. Please try again.');
@@ -129,6 +129,7 @@ export default function History() {
   const getIconColor = (type: string) => {
     if (type.includes('DITA')) return 'text-blue-500';
     if (type.includes('PDF')) return 'text-red-500';
+    if (type.includes('REGS')) return 'text-purple-500';
     if (type.includes('SVG')) return 'text-green-500';
     return 'text-primary';
   };
@@ -252,23 +253,28 @@ export default function History() {
             <CardTitle className="text-sm font-medium">Statistics</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="grid grid-cols-4 gap-4 text-center">
               <div>
                 <div className="text-2xl font-bold">{conversions.length}</div>
-                <div className="text-sm text-muted-foreground">Total Conversions</div>
+                <div className="text-sm text-muted-foreground">Total</div>
               </div>
               <div>
                 <div className="text-2xl font-bold">
                   {conversions.filter(c => c.conversion_type === 'dita').length}
                 </div>
-                <div className="text-sm text-muted-foreground">DITA Packages</div>
+                <div className="text-sm text-muted-foreground">DITA</div>
               </div>
               <div>
                 <div className="text-2xl font-bold">
-                  {conversions.filter(c => c.conversion_type === 'regs').length +
-                   conversions.filter(c => c.conversion_type === 'svg').length}
+                  {conversions.filter(c => c.conversion_type === 'regs').length}
                 </div>
-                <div className="text-sm text-muted-foreground">Other Files</div>
+                <div className="text-sm text-muted-foreground">REGS→PDF</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold">
+                  {conversions.filter(c => c.conversion_type === 'any-to-regs').length}
+                </div>
+                <div className="text-sm text-muted-foreground">ANY→REGS</div>
               </div>
             </div>
           </CardContent>

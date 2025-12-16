@@ -1,4 +1,4 @@
-import { Home, FileText, FileCode, FileImage, FileSpreadsheet, History, Settings, Info } from "lucide-react";
+import { Home, FileText, FileCode, FileImage, FileSpreadsheet, History, Settings, Info, Layers } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -14,13 +14,13 @@ import {
 
 const menuItems = [
   { title: "Home", url: "/", icon: Home },
+  { title: "Multi-IP Doc Generator", url: "/multi-ip-doc-gen", icon: Layers },
   { title: "PDF → DITA Map", url: "/pdf-to-dita", icon: FileText },
   { title: "DocX → DITA Map", url: "/docx-to-dita", icon: FileCode },
   { title: ".REGS → PDF", url: "/regs-to-pdf", icon: FileText },
   { title: "PDF/DocX/Excel → .REGS", url: "/any-to-regs", icon: FileSpreadsheet },
   { title: "Image → SVG", url: "/image-to-svg", icon: FileImage },
   { title: "Upload History", url: "/history", icon: History },
-  // { title: "Settings", url: "/settings", icon: Settings },
   { title: "About", url: "/about", icon: Info },
 ];
 

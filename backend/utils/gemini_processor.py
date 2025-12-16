@@ -21,8 +21,7 @@ class GeminiProcessor:
         
         genai.configure(api_key=api_key)
         
-        # Use models that actually exist in your API (from debug output)
-        # Priority: Stable > Latest > Experimental
+        # ✅ FIXED: Use correct model names that actually exist
         model_names_to_try = [
             'models/gemini-2.5-flash',        # Newest stable flash (June 2025)
             'models/gemini-flash-latest',     # Always points to latest flash
@@ -48,15 +47,6 @@ class GeminiProcessor:
                 continue
         
         if not self.model:
-            # List available models for debugging
-            try:
-                print("\n📋 Listing available models:")
-                for m in genai.list_models():
-                    if 'generateContent' in m.supported_generation_methods:
-                        print(f"  - {m.name}")
-            except Exception as e:
-                print(f"Could not list models: {e}")
-            
             raise ValueError(f"Could not initialize any Gemini model. Last error: {last_error}")
         
         self.max_retries = 3
@@ -79,8 +69,7 @@ class GeminiProcessor:
         # Preprocess data
         cleaned_data = self._preprocess_data(raw_data)
         
-        # Limit data to avoid token limits
-        # Gemini 2.5 Flash has 1M token context, but we'll use 10k chars to be safe
+        # ✅ FIXED: Increased from 6000 to 10000 chars since Gemini 2.5 has 1M token context
         cleaned_data = cleaned_data[:10000]
         
         # Save input for debugging
@@ -163,33 +152,33 @@ class GeminiProcessor:
         raise ValueError(f"Failed to extract register data after {self.max_retries} attempts: {last_error}")
     
     def _create_extraction_prompt(self, data: str, device_name: str) -> str:
-        """Create extraction prompt for Gemini"""
-        return f"""You are a hardware register specification extraction expert. Extract ONLY the CTRL (Control) register information from the provided document and return ONLY valid JSON (no markdown, no code fences, no explanations).
+        """Create extraction prompt for Gemini - extract ALL registers, not just CTRL"""
+        return f"""You are a hardware register specification extraction expert. Extract ALL register information from the provided document and return ONLY valid JSON (no markdown, no code fences, no explanations).
 
 DOCUMENT DATA:
 {data}
 
 EXTRACTION RULES:
-1. Extract ONLY the CTRL (Control) register - ignore all other registers
-2. Preserve exact register name, field names, and ID from the document
-3. Detect register width from the document (16-bit or 32-bit)
+1. Extract ALL registers found in the document (not just CTRL - extract every register you find)
+2. Preserve exact register names, field names, and IDs from the document
+3. Detect register width from the document (8-bit, 16-bit, or 32-bit)
 4. Extract all bit fields with their exact positions, widths, and access modes
 5. Include reserved/unused bit ranges
 6. Extract all field value enumerations with descriptions
-7. Preserve offset address exactly as specified (convert formats like "4h" to "0x4")
-8. Extract complete register description
+7. Preserve offset addresses exactly as specified
+8. Extract complete register descriptions
 
 JSON STRUCTURE:
 {{
   "device_name": "{device_name}",
   "registers": [
     {{
-      "name": "<full CTRL register name from doc>",
-      "id": "CTRL",
+      "name": "<full register name from doc>",
+      "id": "<register ID>",
       "brief_desc": "<short description>",
       "long_desc": "<detailed description>",
       "offset": "<address in 0xNN format>",
-      "width": <16 or 32>,
+      "width": <8, 16, or 32>,
       "reset_value": "<default value in 0xNN format>",
       "fields": [
         {{
@@ -216,7 +205,10 @@ JSON STRUCTURE:
   ]
 }}
 
-CRITICAL: Return ONLY the JSON object with the CTRL register. No explanations, no markdown formatting."""
+CRITICAL: 
+- Return ONLY the JSON object with ALL registers found in the document
+- No explanations, no markdown formatting
+- Extract EVERY register, not just specific ones"""
     
     def _extract_json(self, text: str) -> str:
         """Extract JSON from response text"""

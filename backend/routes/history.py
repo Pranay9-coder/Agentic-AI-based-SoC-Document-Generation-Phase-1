@@ -88,6 +88,34 @@ def scan_regs_conversions(output_base):
     
     return conversions
 
+def scan_any_to_regs_conversions(output_base):
+    """Scan for ANY to REGS conversions (PDF/DOCX/Excel → REGS)"""
+    conversions = []
+    
+    if not os.path.exists(output_base):
+        return conversions
+    
+    for item in os.listdir(output_base):
+        item_path = os.path.join(output_base, item)
+        
+        # Check if it's a REGS file (ANY to REGS conversions)
+        if os.path.isfile(item_path) and item.endswith('.regs'):
+            metadata = get_file_metadata(item_path)
+            
+            conversions.append({
+                'id': item,  # filename
+                'filename': item,
+                'original_name': item.replace('.regs', ''),
+                'type': 'ANY → REGS',
+                'conversion_type': 'any-to-regs',
+                'date': metadata['modified'],
+                'status': 'Completed',
+                'size': metadata['size'],
+                'download_url': f'/api/any-to-regs/download/{item}'
+            })
+    
+    return conversions
+
 def scan_svg_conversions(output_base):
     """Scan for Image to SVG conversions"""
     conversions = []
@@ -134,10 +162,12 @@ def list_history():
         # Scan for each type
         dita_conversions = scan_dita_conversions(output_base)
         regs_conversions = scan_regs_conversions(output_base)
+        any_to_regs_conversions = scan_any_to_regs_conversions(output_base)  # NEW
         svg_conversions = scan_svg_conversions(output_base)
         
         all_conversions.extend(dita_conversions)
         all_conversions.extend(regs_conversions)
+        all_conversions.extend(any_to_regs_conversions)  # NEW
         all_conversions.extend(svg_conversions)
         
         # Sort by date (most recent first)
@@ -145,7 +175,8 @@ def list_history():
         
         print(f"✅ Found {len(all_conversions)} conversions:")
         print(f"   • DITA: {len(dita_conversions)}")
-        print(f"   • REGS: {len(regs_conversions)}")
+        print(f"   • REGS→PDF: {len(regs_conversions)}")
+        print(f"   • ANY→REGS: {len(any_to_regs_conversions)}")  # NEW
         print(f"   • SVG: {len(svg_conversions)}")
         
         return jsonify({
@@ -170,7 +201,7 @@ def delete_conversion(conversion_type, identifier):
     URL: /api/history/delete/<conversion_type>/<identifier>
     
     Args:
-        conversion_type: 'dita', 'regs', or 'svg'
+        conversion_type: 'dita', 'regs', 'any-to-regs', or 'svg'
         identifier: session_id for DITA, filename for others
     """
     try:
@@ -191,11 +222,23 @@ def delete_conversion(conversion_type, identifier):
                 }), 404
         
         elif conversion_type == 'regs':
-            # Delete PDF file
+            # Delete PDF file (REGS to PDF)
             file_path = os.path.join(output_base, identifier)
             if os.path.exists(file_path) and os.path.isfile(file_path):
                 os.remove(file_path)
                 print(f"✅ Deleted REGS PDF: {file_path}")
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'File not found'
+                }), 404
+        
+        elif conversion_type == 'any-to-regs':
+            # Delete REGS file (ANY to REGS)
+            file_path = os.path.join(output_base, identifier)
+            if os.path.exists(file_path) and os.path.isfile(file_path):
+                os.remove(file_path)
+                print(f"✅ Deleted ANY→REGS file: {file_path}")
             else:
                 return jsonify({
                     'success': False,

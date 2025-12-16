@@ -32,6 +32,13 @@ dist-ssr
 *.sw?
 backend/outputs/*
 !backend/outputs/.gitkeep
+
+backend/spec_outputs/*
+!backend/spec_outputs/.gitkeep
 backend/venv/
 venv/
 **/venv/
+
+# Gemini temp files
+backend/gemini_*.txt
+

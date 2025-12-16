@@ -1,7 +1,13 @@
-import { FileText, FileCode, FileImage, FileSpreadsheet } from "lucide-react";
+import { FileText, FileCode, FileImage, FileSpreadsheet, Layers } from "lucide-react";
 import { ModuleCard } from "@/components/ModuleCard";
 
 const modules = [
+  {
+    title: "Multi-IP Documentation Generator",
+    description: "Generate comprehensive SOC documentation from multiple IP specification documents with organized PDF output",
+    icon: Layers,
+    route: "/multi-ip-doc-gen",
+  },
   {
     title: "PDF → DITA Map",
     description: "Convert PDF documents to DITA Map format with automatic image to SVG conversion",
