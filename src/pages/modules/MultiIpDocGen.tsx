@@ -1,8 +1,13 @@
+/**
+ * Updated Multi-IP Documentation Generator with Spec Source Editor
+ * File: src/pages/modules/MultiIpDocGen.tsx
+ */
 import { useState } from "react";
 import { FileUpload } from "@/components/FileUpload";
 import { LogViewer } from "@/components/LogViewer";
+import { SpecSourceEditor } from "@/components/SpecSourceEditor";
 import { Button } from "@/components/ui/button";
-import { Download, FileArchive } from "lucide-react";
+import { Download, FileArchive, Edit, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 const API_BASE_URL = "http://localhost:5000/api";
@@ -14,6 +19,7 @@ export default function MultiIpDocGen() {
   const [outputReady, setOutputReady] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [ipCount, setIpCount] = useState(0);
+  const [editorOpen, setEditorOpen] = useState(false);
 
   const addLog = (message: string, type: "info" | "success" | "error" | "warning" = "info") => {
     const timestamp = new Date().toLocaleTimeString();
@@ -198,6 +204,19 @@ export default function MultiIpDocGen() {
     }
   };
 
+  const handleOpenEditor = () => {
+    if (!sessionId) {
+      toast.error("No session found");
+      return;
+    }
+    setEditorOpen(true);
+  };
+
+  const handlePdfRegenerated = () => {
+    addLog("PDF regenerated from edited spec source", "success");
+    toast.success("PDF updated! Download the new version.");
+  };
+
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
@@ -220,24 +239,44 @@ export default function MultiIpDocGen() {
 
           {outputReady && (
             <div className="space-y-3">
+              {/* Primary Actions */}
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={handleDownloadZip}
+                  className="cyber-glow-intense"
+                  size="lg"
+                >
+                  <FileArchive className="mr-2 h-4 w-4" />
+                  Download ZIP
+                </Button>
+                
+                <Button
+                  onClick={handleDownloadPdf}
+                  className="cyber-glow-intense"
+                  size="lg"
+                  variant="secondary"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download PDF
+                </Button>
+              </div>
+
+              {/* NEW: Edit Spec Source Button */}
               <Button
-                onClick={handleDownloadZip}
-                className="w-full cyber-glow-intense"
+                onClick={handleOpenEditor}
+                className="w-full"
                 size="lg"
+                variant="outline"
               >
-                <FileArchive className="mr-2 h-4 w-4" />
-                Download Spec Outputs (ZIP)
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Spec Source & Regenerate PDF
               </Button>
-              
-              <Button
-                onClick={handleDownloadPdf}
-                className="w-full cyber-glow-intense"
-                size="lg"
-                variant="secondary"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Download Organized PDF
-              </Button>
+
+              <div className="p-3 bg-secondary/50 rounded-lg border">
+                <p className="text-xs text-muted-foreground">
+                  💡 Use the editor to modify DITA topics, REGS files, or images, then regenerate an updated PDF
+                </p>
+              </div>
             </div>
           )}
 
@@ -266,8 +305,22 @@ export default function MultiIpDocGen() {
             <span className="text-primary">•</span>
             <span><strong>Automatic Detection:</strong> Identifies and converts register tables to .REGS format automatically</span>
           </li>
+          <li className="flex items-start gap-2">
+            <span className="text-primary text-green-500">•</span>
+            <span><strong>Editable Spec Source:</strong> Edit generated files and regenerate updated PDFs on-the-fly</span>
+          </li>
         </ul>
       </div>
+
+      {/* Spec Source Editor Modal */}
+      {sessionId && (
+        <SpecSourceEditor
+          sessionId={sessionId}
+          isOpen={editorOpen}
+          onClose={() => setEditorOpen(false)}
+          onPdfRegenerated={handlePdfRegenerated}
+        />
+      )}
     </div>
   );
 }

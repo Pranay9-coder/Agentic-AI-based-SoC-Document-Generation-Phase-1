@@ -10,6 +10,7 @@ from routes.image_conversion import image_bp
 from routes.history import history_bp
 from routes.any_to_regs_conversion import any_to_regs_bp
 from routes.multi_ip_conversion import multi_ip_bp
+from routes.spec_source_editor import spec_editor_bp 
 import os
 from dotenv import load_dotenv
 
@@ -59,6 +60,7 @@ app.register_blueprint(regs_bp, url_prefix='/api/regs')
 app.register_blueprint(history_bp, url_prefix='/api/history')
 app.register_blueprint(any_to_regs_bp, url_prefix='/api/any-to-regs')
 app.register_blueprint(multi_ip_bp, url_prefix='/api/multi-ip')
+app.register_blueprint(spec_editor_bp, url_prefix='/api/spec-editor')
 
 @app.route('/')
 def index():
