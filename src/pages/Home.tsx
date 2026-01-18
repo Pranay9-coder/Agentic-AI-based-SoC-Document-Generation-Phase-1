@@ -1,4 +1,4 @@
-import { FileText, FileCode, FileImage, FileSpreadsheet, Layers } from "lucide-react";
+import { FileText, FileCode, FileImage, FileSpreadsheet, Layers, FolderArchive } from "lucide-react";
 import { ModuleCard } from "@/components/ModuleCard";
 
 const modules = [
@@ -7,6 +7,12 @@ const modules = [
     description: "Generate comprehensive SOC documentation from multiple IP specification documents with organized PDF output",
     icon: Layers,
     route: "/multi-ip-doc-gen",
+  },
+  {
+    title: "Spec Source → PDF",
+    description: "Convert existing spec_source folders (DITA, REGS, images) directly to organized PDF documentation",
+    icon: FolderArchive,
+    route: "/spec-to-pdf",
   },
   {
     title: "PDF → DITA Map",

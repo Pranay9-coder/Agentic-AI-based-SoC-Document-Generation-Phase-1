@@ -11,6 +11,7 @@ import RegsToPdf from "./pages/modules/RegsToPdf";
 import AnyToRegs from "./pages/modules/AnyToRegs";
 import ImageToSvg from "./pages/modules/ImageToSvg";
 import MultiIpDocGen from "./pages/modules/MultiIpDocGen";
+import SpecToPdf from "./pages/modules/SpecToPdf";
 import History from "./pages/History";
 import Settings from "./pages/Settings";
 import About from "./pages/About";
@@ -28,6 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/multi-ip-doc-gen" element={<MultiIpDocGen />} />
+            <Route path="/spec-to-pdf" element={<SpecToPdf />} />
             <Route path="/pdf-to-dita" element={<PdfToDita />} />
             <Route path="/docx-to-dita" element={<DocxToDita />} />
             <Route path="/regs-to-pdf" element={<RegsToPdf />} />
