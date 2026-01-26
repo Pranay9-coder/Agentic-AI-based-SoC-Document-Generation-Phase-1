@@ -48,3 +48,7 @@ venv/
 
 # Gemini temp files
 backend/gemini_*.txt
+
+**/tempCodeRunnerFile.py
+**/tempCodeRunnerFile.bat
+.dependencies_installed
