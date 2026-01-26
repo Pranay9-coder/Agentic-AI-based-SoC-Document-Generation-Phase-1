@@ -159,11 +159,13 @@ cd TransformX-AI
 
 **2. Configure Environment Variables**
 
-Navigate to the `backend` folder and configure your Gemini API key:
-
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-```
+   Before running the launcher, ensure your Gemini API key is configured:
+   - Navigate to the `backend` folder
+   - If `.env` file doesn't exist
+   - Add your Gemini API key to the `.env` file:
+     ```env
+     GEMINI_API_KEY=your_gemini_api_key_here
+     ```
 
 **3. Launch the Application**
 
@@ -874,7 +876,7 @@ This project is proprietary software. All rights reserved.
 
 - 🐛 **Bug Reports:** [Submit an Issue](https://github.com/Adiverse07/TransformX-AI/issues)
 - 💡 **Feature Requests:** [Request a Feature](https://github.com/Adiverse07/TransformX-AI/issues)
-- 📧 **Direct Support:** [Contact Email]
+- 📧 **Direct Support:** toBeUpdated
 
 ---
 
